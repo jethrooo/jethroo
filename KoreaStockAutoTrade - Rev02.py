@@ -283,3 +283,5 @@ try:
 except Exception as e:
     send_message(f"[오류 발생]{e}")
     time.sleep(1)
+
+# Git test
