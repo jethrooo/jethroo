@@ -4,7 +4,7 @@ import datetime
 import time
 import yaml
 
-with open('config.yaml', encoding='UTF-8') as f:
+with open('1_config.yaml', encoding='UTF-8') as f:
     _cfg = yaml.load(f, Loader=yaml.FullLoader)
 APP_KEY = _cfg['APP_KEY']
 APP_SECRET = _cfg['APP_SECRET']
@@ -81,7 +81,7 @@ def get_target_price(code="005930"):
     stck_oprc = int(res.json()['output'][0]['stck_oprc']) #오늘 시가
     stck_hgpr = int(res.json()['output'][1]['stck_hgpr']) #전일 고가
     stck_lwpr = int(res.json()['output'][1]['stck_lwpr']) #전일 저가
-    target_price = stck_oprc + (stck_hgpr - stck_lwpr) * 0.5
+    target_price = stck_oprc + (stck_hgpr - stck_lwpr) * 0.45           ##### k값 #####
     return target_price
 
 def get_stock_balance():
@@ -112,19 +112,19 @@ def get_stock_balance():
     stock_list = res.json()['output1']
     evaluation = res.json()['output2']
     stock_dict = {}
-    send_message(f"====주식 보유잔고====")
+    send_message(f"")
+    send_message(f"==== 주식 보유잔고 ====")
     for stock in stock_list:
         if int(stock['hldg_qty']) > 0:
             stock_dict[stock['pdno']] = stock['hldg_qty']
             send_message(f"{stock['prdt_name']}({stock['pdno']}): {stock['hldg_qty']}주")
             time.sleep(0.1)
     send_message(f"주식 평가 금액: {evaluation[0]['scts_evlu_amt']}원")
-    time.sleep(0.1)
     send_message(f"평가 손익 합계: {evaluation[0]['evlu_pfls_smtl_amt']}원")
-    time.sleep(0.1)
     send_message(f"총 평가 금액: {evaluation[0]['tot_evlu_amt']}원")
-    time.sleep(0.1)
-    send_message(f"=================")
+    sonik = (int((evaluation[0]['tot_evlu_amt']))) - 1000000
+    send_message("총 손익 금액: %d원" % sonik)
+    send_message("총 손익율: %0.2f%%" % float(sonik/1000000*100))
     return stock_dict
 
 def get_balance():
@@ -149,7 +149,10 @@ def get_balance():
     }
     res = requests.get(URL, headers=headers, params=params)
     cash = res.json()['output']['ord_psbl_cash']
-    send_message(f"주문 가능 현금 잔고: {cash}원")
+    send_message(f"""
+    """)
+    send_message(f"****** New Message ******")
+    send_message(f"주문 가능 잔고: {cash}원")
     return int(cash)
 
 def buy(code="005930", qty="1"):
@@ -212,7 +215,8 @@ def sell(code="005930", qty="1"):
 try:
     ACCESS_TOKEN = get_access_token()
 
-    symbol_list = ["005930", "035720", "000660", "069500", "373220", "006400"] # 삼성전자, 카카오, 하이닉스, 코덱스200, 엔솔,SDI
+    symbol_list = ["005930","035720","000660","373220","006400","035760","048260"] 
+                  # 삼성전자, 카카오, 하이닉스, 엔솔, SDI, CJ ENM, 오스템임플란트
     bought_list = [] # 매수 완료된 종목 리스트
     total_cash = get_balance() # 보유 현금 조회
     stock_dict = get_stock_balance() # 보유 주식 조회
@@ -223,15 +227,20 @@ try:
     buy_amount = total_cash * buy_percent  # 종목별 주문 금액 계산
     soldout = False
 
-    send_message("===국내 주식 자동매매 프로그램을 시작합니다===")
+    send_message(f"")
+    send_message("=== 국내주식 자동매매 프로그램 가동이 시작되었습니다 !!! ===")
+    send_message("=== 국내주식 자동매매 프로그램 가동이 시작되었습니다 !!! ===")
+    send_message("=== 국내주식 자동매매 프로그램 가동이 시작되었습니다 !!! ===")
+    send_message(f"")
+
     while True:
         t_now = datetime.datetime.now()
         t_9 = t_now.replace(hour=9, minute=0, second=0, microsecond=0)
         t_start = t_now.replace(hour=9, minute=5, second=0, microsecond=0)
         t_sell = t_now.replace(hour=15, minute=15, second=0, microsecond=0)
-        t_exit = t_now.replace(hour=15, minute=20, second=0,microsecond=0)
+        t_exit = t_now.replace(hour=22, minute=20, second=0,microsecond=0)
         today = datetime.datetime.today().weekday()
-        if today == 5 or today == 6:  # 토요일이나 일요일이면 자동 종료
+        if today == 5 or today == 6:  # 토요일(5)이나 일요일(6)이면 자동 종료                 
             send_message("주말이므로 프로그램을 종료합니다.")
             break
         if t_9 < t_now < t_start and soldout == False: # 잔여 수량 매도
@@ -259,7 +268,7 @@ try:
                                 get_stock_balance()
                     time.sleep(1)
             time.sleep(1)
-            if t_now.minute == 30 and t_now.second <= 5: 
+            if (t_now.minute == 00 or t_now.minute == 10 or t_now.minute == 20 or t_now.minute == 30 or t_now.minute == 40 or t_now.minute == 50) and t_now.second <= 5: 
                 get_stock_balance()
                 time.sleep(5)
         if t_sell < t_now < t_exit:  # PM 03:15 ~ PM 03:20 : 일괄 매도
