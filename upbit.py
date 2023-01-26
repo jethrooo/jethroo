@@ -2,8 +2,8 @@ import time
 import pyupbit
 import datetime
 
-access = "7HiPrXfMMd1KZwlDTgIwyN3x0aDAdTqgeYjJIcNP"
-secret = "MkYeFWTTKDUmUqMpsWWZsVXMhBn9STBRHI0TtIDD"
+access = "UMFlI3txuvNDd38icFkDBWaFTs1TMrR29gF5xVNc"
+secret = "4VP6qlZ23KKtONkHVuxT20T2pgxzywIIqVEVNb9K"
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
