@@ -240,9 +240,9 @@ try:
         t_sell = t_now.replace(hour=15, minute=15, second=0, microsecond=0)
         t_exit = t_now.replace(hour=22, minute=20, second=0,microsecond=0)
         today = datetime.datetime.today().weekday()
-        if today == 5 or today == 6:  # 토요일(5)이나 일요일(6)이면 자동 종료                 
-            send_message("주말이므로 프로그램을 종료합니다.")
-            break
+        #if today == 5 or today == 6:  # 토요일(5)이나 일요일(6)이면 자동 종료                 
+        #    send_message("주말이므로 프로그램을 종료합니다.")
+        #    break
         if t_9 < t_now < t_start and soldout == False: # 잔여 수량 매도
             for sym, qty in stock_dict.items():
                 sell(sym, qty)
