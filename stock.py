@@ -279,9 +279,9 @@ try:
                 soldout = True
                 bought_list = []
                 time.sleep(1)
-        if t_exit < t_now:  # PM 03:20 ~ :프로그램 종료
-            send_message("프로그램을 종료합니다.")
-            break
+        #if t_exit < t_now:  # PM 03:20 ~ :프로그램 종료
+        #    send_message("프로그램을 종료합니다.")
+        #    break
 except Exception as e:
     send_message(f"[오류 발생]{e}")
     time.sleep(1)
